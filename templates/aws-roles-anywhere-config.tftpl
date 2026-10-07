@@ -1,0 +1,2 @@
+[profile roles-anywhere]
+credential_process = /roles-anywhere/aws_signing_helper credential-process --certificate /roles-anywhere/client-cert.pem --private-key /roles-anywhere/client-key.pem --trust-anchor-arn ${trust_anchor_arn} --profile-arn ${profile_arn} --role-arn ${role_arn} --region ${aws_region}

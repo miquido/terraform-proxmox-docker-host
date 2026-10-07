@@ -131,8 +131,8 @@ variable "oidc_audience" {
 }
 
 variable "oidc_expected_subs" {
-  type        = string
-  description = "Comma-separated list of allowed OIDC subjects"
+  type        = list(string)
+  description = "Allowed OIDC subjects (patterns accepted by the docker-compose-runner, e.g. project_path:my-group/**)"
 }
 
 variable "ip_allowlist" {
@@ -161,7 +161,7 @@ variable "nas_export" {
 variable "walg_env_vars" {
   type        = map(string)
   sensitive   = true
-  description = "WAL-G env vars written to /home/ubuntu/walg.env. Empty map = skip. Pass WALG_S3_PREFIX, AWS_ACCESS_KEY_ID, etc."
+  description = "WAL-G env vars written to /etc/docker-host/walg.env (symlinked from /home/ubuntu/walg.env). Empty map = skip. Pass WALG_S3_PREFIX, AWS_ACCESS_KEY_ID, etc."
   default     = {}
 }
 
@@ -185,13 +185,26 @@ variable "public_domain" {
 
 variable "registry_username" {
   type        = string
-  description = "Username for docker login to registry_url. Empty together with registry_password = no login."
+  description = "Username the host logs in with: to registry_url (an external registry), or to its own registry.<domain> when registry_htpasswd is set (must then be one of its users)."
   default     = ""
 }
 
 variable "registry_password" {
   type        = string
   sensitive   = true
-  description = "Password for docker login to registry_url."
+  description = "Password for registry_username."
+  default     = ""
+}
+
+variable "enable_registry" {
+  type        = bool
+  description = "Run the built-in docker registry on the host (registry.<domain>). Set registry_htpasswd as well: without it anyone who can reach the host can push images that the docker-compose-runner then pulls."
+  default     = false
+}
+
+variable "registry_htpasswd" {
+  type        = string
+  sensitive   = true
+  description = "htpasswd entries (bcrypt, comma-separated for several users) protecting the built-in registry with basic auth. Requires enable_registry, registry_username and registry_password."
   default     = ""
 }

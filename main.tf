@@ -43,8 +43,9 @@ locals {
   # Official Traefik image is Alpine/musl; the AWS-built aws_signing_helper binary is
   # glibc-only — installed via gcompat in the Traefik entrypoint (roles_anywhere_entrypoint below).
   roles_anywhere_runcmd = local.roles_anywhere_enabled ? [
-    "curl -fsSL -o /home/ubuntu/aws-roles-anywhere/aws_signing_helper https://rolesanywhere.amazonaws.com/releases/1.8.5/X86_64/Linux/Amzn2023/aws_signing_helper",
-    "chmod +x /home/ubuntu/aws-roles-anywhere/aws_signing_helper",
+    # SHA-256 of release 1.8.5 (X86_64, Amzn2023) as downloaded when this was pinned; the install aborts
+    # on a mismatch instead of making an unverified binary executable.
+    "curl -fsSL -o /home/ubuntu/aws-roles-anywhere/aws_signing_helper https://rolesanywhere.amazonaws.com/releases/1.8.5/X86_64/Linux/Amzn2023/aws_signing_helper && echo 'beec9ed1c492d93db809890f16713e3556353294b823c2184ad4e891f1b2b54d  /home/ubuntu/aws-roles-anywhere/aws_signing_helper' | sha256sum -c - && chmod +x /home/ubuntu/aws-roles-anywhere/aws_signing_helper",
   ] : []
 
   public_domain_escaped_raw = replace(var.public_domain, ".", "\\.")
@@ -75,7 +76,7 @@ locals {
 
   cloudflared_service = <<-EOF
     cloudflared:
-      image: cloudflare/cloudflared:latest
+      image: cloudflare/cloudflared:2026.9.3
       command: tunnel run
       environment:
         TUNNEL_TOKEN: ${var.cloudflare_tunnel_token}
@@ -99,6 +100,9 @@ locals {
       content = <<-EOF
         [Unit]
         Description=Restore /mnt/data from NAS
+        # Without this, a NAS that is not mounted yet makes the restore a silent no-op and the empty
+        # disk is then mirrored over the NAS copy by docker-backup.
+        RequiresMountsFor=/mnt/data-nas
         Before=docker.service
         After=network-online.target
         Wants=network-online.target
@@ -117,15 +121,17 @@ locals {
       content = <<-EOF
         [Unit]
         Description=Backup /mnt/data to NAS
+        RequiresMountsFor=/mnt/data-nas
         After=network-online.target
 
         [Service]
         Type=oneshot
-        # --delete: without it, files removed locally (or leftover cruft from a mid-restore
-        # crash — bit us for real on 2026-09-29, stale InnoDB #ib_redo*_tmp files from an
-        # earlier failed attempt survived every subsequent backup and corrupted a later
-        # restore) accumulate on NAS forever instead of the mirror reflecting current state.
-        ExecStart=/bin/bash -c 'mountpoint -q /mnt/data-nas && rsync -a --delete /mnt/data/ /mnt/data-nas/'
+        # --delete: without it, files removed locally (or leftover cruft from a mid-restore crash, such
+        # as stale InnoDB temp files, which can corrupt a later restore) accumulate on the NAS forever
+        # instead of the mirror reflecting the current state.
+        # Refuse to run when the NAS is not mounted or /mnt/data/compose is empty: that is a fresh or
+        # failed-restore disk, and mirroring it with --delete would wipe the only copy.
+        ExecStart=/bin/bash -c 'mountpoint -q /mnt/data-nas || { echo "NAS not mounted: refusing to mirror"; exit 1; }; [ -n "$(ls -A /mnt/data/compose 2>/dev/null)" ] || { echo "/mnt/data/compose is empty (fresh disk or restore did not run): refusing to overwrite the NAS copy"; exit 1; }; rsync -a --delete /mnt/data/ /mnt/data-nas/'
       EOF
     },
     {
@@ -177,14 +183,15 @@ module "core" {
 
   oidc_jwks_url               = var.oidc_jwks_url
   oidc_audience               = var.oidc_audience
-  oidc_expected_subs          = split(",", var.oidc_expected_subs)
+  oidc_expected_subs          = var.oidc_expected_subs
   ip_allowlist                = var.ip_allowlist
   docker_compose_runner_image = var.docker_compose_runner_image
 
   registry_url      = var.registry_url
   registry_username = var.registry_username
   registry_password = var.registry_password
-  enable_registry   = true
+  enable_registry   = var.enable_registry
+  registry_htpasswd = var.registry_htpasswd
 
   ssh_public_keys = var.ssh_public_keys
   walg_env_vars   = var.walg_env_vars
@@ -210,7 +217,7 @@ module "core" {
     ["systemctl enable --now qemu-guest-agent"],
     local.nas_runcmd,
     local.roles_anywhere_runcmd,
-    ["chown -R ubuntu:ubuntu /mnt/data /home/ubuntu"],
+    ["chown -R ubuntu:ubuntu /mnt/data/certs /mnt/data/compose /mnt/data/static /home/ubuntu"],
   )
 }
 

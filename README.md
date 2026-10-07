@@ -86,7 +86,7 @@ make lint   # lint terraform code
 
 | Name | Source | Version |
 | ---- | ------ | ------- |
-| <a name="module_core"></a> [core](#module\_core) | git::https://github.com/miquido/terraform-docker-host.git | v2.0.0 |
+| <a name="module_core"></a> [core](#module\_core) | git::https://github.com/miquido/terraform-docker-host.git | v2.0.1 |
 
 ## Resources
 

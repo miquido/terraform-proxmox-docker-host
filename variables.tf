@@ -17,7 +17,6 @@ variable "name" {
 variable "node_name" {
   type        = string
   description = "Proxmox node name"
-  default     = "zbigniew"
 }
 
 variable "vm_description" {
@@ -34,7 +33,7 @@ variable "ssh_public_keys" {
 
 variable "ip" {
   type        = string
-  description = "Static IP with prefix length in CIDR notation (e.g. 10.119.160.127/19)"
+  description = "Static IP with prefix length in CIDR notation (e.g. 10.0.0.10/24)"
 }
 
 variable "gateway" {
@@ -61,7 +60,7 @@ variable "disk_size" {
 
 variable "domain" {
   type        = string
-  description = "Base domain for Traefik (e.g. dmc.miquido.it)"
+  description = "Base domain for Traefik (e.g. dmc.example.com)"
 }
 
 variable "acme_email" {
@@ -149,14 +148,14 @@ variable "docker_compose_runner_image" {
 
 variable "nas_host" {
   type        = string
-  description = "QNAP NAS IP/hostname (real address, not a reverse-proxied *.miquido.it name) exporting the NFS share used as periodic /mnt/data backup target. Empty = disabled."
+  description = "NFS server IP/hostname (the real address, not a name that goes through a reverse proxy) exporting the NFS share used as periodic /mnt/data backup target. Empty = disabled."
   default     = ""
 }
 
 variable "nas_export" {
   type        = string
-  description = "NFS export path on the NAS for this VM's /mnt/data backup (e.g. /dmc)"
-  default     = "/dmc"
+  description = "NFS export path for this VM's /mnt/data mirror (e.g. /docker-host)"
+  default     = "/docker-host"
 }
 
 variable "walg_env_vars" {
@@ -180,7 +179,7 @@ variable "cloudflare_tunnel_token" {
 
 variable "public_domain" {
   type        = string
-  description = "Domain for opt-in public exposure of static sites via the Cloudflare tunnel (e.g. miquido.cloud). Empty = disabled."
+  description = "Domain for opt-in public exposure of static sites via the Cloudflare tunnel (e.g. example.dev). Empty = disabled."
   default     = ""
 }
 

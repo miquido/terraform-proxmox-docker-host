@@ -8,7 +8,7 @@ terraform {
 }
 
 locals {
-  # Strip prefix length for Route53 (e.g. "10.119.160.127/19" → "10.119.160.127")
+  # Strip prefix length for Route53 (e.g. "10.0.0.10/24" → "10.0.0.10")
   vm_ip = split("/", var.ip)[0]
 
   roles_anywhere_enabled = var.roles_anywhere_trust_anchor_arn != ""

@@ -107,20 +107,20 @@ make lint   # lint terraform code
 | <a name="input_disk_size"></a> [disk\_size](#input\_disk\_size) | Root disk size in GB | `number` | `40` | no |
 | <a name="input_dns_challenge_env"></a> [dns\_challenge\_env](#input\_dns\_challenge\_env) | Env vars for Traefik Route53 DNS challenge (static IAM key). Mutually exclusive in practice with roles\_anywhere\_trust\_anchor\_arn — the AWS SDK's env-var credentials take priority over the shared config profile, so setting both silently keeps using this one. Leave empty ({}) to actually use Roles Anywhere. | `map(string)` | `{}` | no |
 | <a name="input_docker_compose_runner_image"></a> [docker\_compose\_runner\_image](#input\_docker\_compose\_runner\_image) | n/a | `string` | `"ghcr.io/miquido/gitlab-docker-compose-host:v1.4.0"` | no |
-| <a name="input_domain"></a> [domain](#input\_domain) | Base domain for Traefik (e.g. dmc.miquido.it) | `string` | n/a | yes |
+| <a name="input_domain"></a> [domain](#input\_domain) | Base domain for Traefik (e.g. dmc.example.com) | `string` | n/a | yes |
 | <a name="input_gateway"></a> [gateway](#input\_gateway) | Default gateway for the VM (e.g. 10.10.0.1) | `string` | n/a | yes |
 | <a name="input_image_datastore"></a> [image\_datastore](#input\_image\_datastore) | Proxmox datastore for VM disk | `string` | `"local"` | no |
-| <a name="input_ip"></a> [ip](#input\_ip) | Static IP with prefix length in CIDR notation (e.g. 10.119.160.127/19) | `string` | n/a | yes |
+| <a name="input_ip"></a> [ip](#input\_ip) | Static IP with prefix length in CIDR notation (e.g. 10.0.0.10/24) | `string` | n/a | yes |
 | <a name="input_ip_allowlist"></a> [ip\_allowlist](#input\_ip\_allowlist) | CIDR allowed to hit docker-compose-runner | `string` | `"0.0.0.0/0"` | no |
 | <a name="input_memory"></a> [memory](#input\_memory) | Memory in MB | `number` | `4096` | no |
 | <a name="input_name"></a> [name](#input\_name) | VM name / hostname | `string` | n/a | yes |
-| <a name="input_nas_export"></a> [nas\_export](#input\_nas\_export) | NFS export path on the NAS for this VM's /mnt/data backup (e.g. /dmc) | `string` | `"/dmc"` | no |
-| <a name="input_nas_host"></a> [nas\_host](#input\_nas\_host) | QNAP NAS IP/hostname (real address, not a reverse-proxied *.miquido.it name) exporting the NFS share used as periodic /mnt/data backup target. Empty = disabled. | `string` | `""` | no |
-| <a name="input_node_name"></a> [node\_name](#input\_node\_name) | Proxmox node name | `string` | `"zbigniew"` | no |
+| <a name="input_nas_export"></a> [nas\_export](#input\_nas\_export) | NFS export path for this VM's /mnt/data mirror (e.g. /docker-host) | `string` | `"/docker-host"` | no |
+| <a name="input_nas_host"></a> [nas\_host](#input\_nas\_host) | NFS server IP/hostname (the real address, not a name that goes through a reverse proxy) exporting the NFS share used as periodic /mnt/data backup target. Empty = disabled. | `string` | `""` | no |
+| <a name="input_node_name"></a> [node\_name](#input\_node\_name) | Proxmox node name | `string` | n/a | yes |
 | <a name="input_oidc_audience"></a> [oidc\_audience](#input\_oidc\_audience) | Expected OIDC audience | `string` | n/a | yes |
 | <a name="input_oidc_expected_subs"></a> [oidc\_expected\_subs](#input\_oidc\_expected\_subs) | Comma-separated list of allowed OIDC subjects | `string` | n/a | yes |
 | <a name="input_oidc_jwks_url"></a> [oidc\_jwks\_url](#input\_oidc\_jwks\_url) | JWKS URL for docker-compose-runner OIDC | `string` | n/a | yes |
-| <a name="input_public_domain"></a> [public\_domain](#input\_public\_domain) | Domain for opt-in public exposure of static sites via the Cloudflare tunnel (e.g. miquido.cloud). Empty = disabled. | `string` | `""` | no |
+| <a name="input_public_domain"></a> [public\_domain](#input\_public\_domain) | Domain for opt-in public exposure of static sites via the Cloudflare tunnel (e.g. example.dev). Empty = disabled. | `string` | `""` | no |
 | <a name="input_registry_password"></a> [registry\_password](#input\_registry\_password) | Password for docker login to registry\_url. | `string` | `""` | no |
 | <a name="input_registry_url"></a> [registry\_url](#input\_registry\_url) | n/a | `string` | `""` | no |
 | <a name="input_registry_username"></a> [registry\_username](#input\_registry\_username) | Username for docker login to registry\_url. Empty together with registry\_password = no login. | `string` | `""` | no |

@@ -166,7 +166,14 @@ locals {
     "sh", "-c", "apk add --no-cache gcompat >/dev/null && exec /entrypoint.sh \"$@\"", "--",
   ] : []
   roles_anywhere_volumes = local.roles_anywhere_enabled ? ["/home/ubuntu/aws-roles-anywhere:/roles-anywhere:ro"] : []
-  roles_anywhere_env     = local.roles_anywhere_enabled ? { AWS_SDK_LOAD_CONFIG = "1", AWS_PROFILE = "roles-anywhere" } : {}
+  # The SDK finds the profile only through AWS_CONFIG_FILE (there is no ~/.aws/config in the Traefik
+  # container) and needs a region for the Route53 client: the region in credential_process is not enough.
+  roles_anywhere_env = local.roles_anywhere_enabled ? {
+    AWS_SDK_LOAD_CONFIG = "1"
+    AWS_PROFILE         = "roles-anywhere"
+    AWS_CONFIG_FILE     = "/roles-anywhere/config"
+    AWS_REGION          = var.aws_region
+  } : {}
 }
 
 module "core" {

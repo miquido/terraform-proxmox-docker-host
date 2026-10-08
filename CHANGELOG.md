@@ -1,3 +1,10 @@
+## [1.0.1](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/compare/v1.0.0...v1.0.1) (2026-10-08)
+
+
+### Bug Fixes
+
+* make DNS-01 via IAM Roles Anywhere actually work (AWS_CONFIG_FILE and AWS_REGION) ([658006a](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/commit/658006a3a663eedfb95338737c36f67877d3934a))
+
 # 1.0.0 (2026-10-07)
 
 

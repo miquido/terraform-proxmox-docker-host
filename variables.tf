@@ -9,6 +9,12 @@ variable "image_datastore" {
   default     = "local"
 }
 
+variable "image_file_name" {
+  type        = string
+  description = "File name of the Ubuntu cloud image in image_datastore. The module downloads it and, if a file with that name already exists, replaces it (and removes it on destroy), so hosts that share a datastore but are managed separately should use different names."
+  default     = "noble-server-cloudimg-amd64.img"
+}
+
 variable "name" {
   type        = string
   description = "VM name / hostname"
@@ -112,6 +118,12 @@ variable "roles_anywhere_role_arn" {
   type        = string
   description = "IAM role assumed via Roles Anywhere, scoped to Route53 changes on the zone Traefik issues certs for. Not a secret."
   default     = ""
+}
+
+variable "roles_anywhere_key_gid" {
+  type        = number
+  description = "Numeric group ID that may read the Roles Anywhere private key (mode 0640, group set to this). Needed when a container that does not run as root authenticates with the profile, e.g. the postgres user (gid 999) running wal-g from archive_command. null = the key stays readable by the ubuntu user (and root in containers) only."
+  default     = null
 }
 
 variable "aws_region" {

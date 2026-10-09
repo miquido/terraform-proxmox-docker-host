@@ -48,6 +48,9 @@ module "docker_host" {
 }
 ```
 
+A complete, runnable example (zone and records in Route53, IAM Roles Anywhere for DNS-01 and WAL-G, a registry with
+generated credentials) is in [`examples/complete`](examples/complete).
+
 ## Things to know
 
 - **cloud-init runs once.** Changing any input re-renders the snippet, which makes Terraform replace the VM
@@ -86,7 +89,7 @@ make lint   # lint terraform code
 
 | Name | Source | Version |
 | ---- | ------ | ------- |
-| <a name="module_core"></a> [core](#module\_core) | git::https://github.com/miquido/terraform-docker-host.git | v2.0.1 |
+| <a name="module_core"></a> [core](#module\_core) | git::https://github.com/miquido/terraform-docker-host.git | v2.1.0 |
 
 ## Resources
 
@@ -111,6 +114,7 @@ make lint   # lint terraform code
 | <a name="input_enable_registry"></a> [enable\_registry](#input\_enable\_registry) | Run the built-in docker registry on the host (registry.<domain>). Set registry\_htpasswd as well: without it anyone who can reach the host can push images that the docker-compose-runner then pulls. | `bool` | `false` | no |
 | <a name="input_gateway"></a> [gateway](#input\_gateway) | Default gateway for the VM (e.g. 10.10.0.1) | `string` | n/a | yes |
 | <a name="input_image_datastore"></a> [image\_datastore](#input\_image\_datastore) | Proxmox datastore for VM disk | `string` | `"local"` | no |
+| <a name="input_image_file_name"></a> [image\_file\_name](#input\_image\_file\_name) | File name of the Ubuntu cloud image in image\_datastore. The module downloads it and, if a file with that name already exists, replaces it (and removes it on destroy), so hosts that share a datastore but are managed separately should use different names. | `string` | `"noble-server-cloudimg-amd64.img"` | no |
 | <a name="input_ip"></a> [ip](#input\_ip) | Static IP with prefix length in CIDR notation (e.g. 10.0.0.10/24) | `string` | n/a | yes |
 | <a name="input_ip_allowlist"></a> [ip\_allowlist](#input\_ip\_allowlist) | CIDR allowed to hit docker-compose-runner | `string` | `"0.0.0.0/0"` | no |
 | <a name="input_memory"></a> [memory](#input\_memory) | Memory in MB | `number` | `4096` | no |
@@ -129,6 +133,7 @@ make lint   # lint terraform code
 | <a name="input_roles_anywhere_ca_cert"></a> [roles\_anywhere\_ca\_cert](#input\_roles\_anywhere\_ca\_cert) | CA certificate (PEM) that issued roles\_anywhere\_client\_cert — Roles Anywhere Trust Anchor's source | `string` | `""` | no |
 | <a name="input_roles_anywhere_client_cert"></a> [roles\_anywhere\_client\_cert](#input\_roles\_anywhere\_client\_cert) | IAM Roles Anywhere client certificate (PEM). Empty = Roles Anywhere disabled, Traefik falls back to dns\_challenge\_env. | `string` | `""` | no |
 | <a name="input_roles_anywhere_client_key"></a> [roles\_anywhere\_client\_key](#input\_roles\_anywhere\_client\_key) | Private key (PEM) for roles\_anywhere\_client\_cert | `string` | `""` | no |
+| <a name="input_roles_anywhere_key_gid"></a> [roles\_anywhere\_key\_gid](#input\_roles\_anywhere\_key\_gid) | Numeric group ID that may read the Roles Anywhere private key (mode 0640, group set to this). Needed when a container that does not run as root authenticates with the profile, e.g. the postgres user (gid 999) running wal-g from archive\_command. null = the key stays readable by the ubuntu user (and root in containers) only. | `number` | `null` | no |
 | <a name="input_roles_anywhere_profile_arn"></a> [roles\_anywhere\_profile\_arn](#input\_roles\_anywhere\_profile\_arn) | Roles Anywhere Profile ARN. Not a secret. | `string` | `""` | no |
 | <a name="input_roles_anywhere_role_arn"></a> [roles\_anywhere\_role\_arn](#input\_roles\_anywhere\_role\_arn) | IAM role assumed via Roles Anywhere, scoped to Route53 changes on the zone Traefik issues certs for. Not a secret. | `string` | `""` | no |
 | <a name="input_roles_anywhere_trust_anchor_arn"></a> [roles\_anywhere\_trust\_anchor\_arn](#input\_roles\_anywhere\_trust\_anchor\_arn) | Roles Anywhere Trust Anchor ARN. Not a secret. Empty = Roles Anywhere disabled. | `string` | `""` | no |

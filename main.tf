@@ -162,6 +162,11 @@ locals {
 
   # Official Traefik image is Alpine/musl; the AWS-built aws_signing_helper binary is
   # glibc-only — installed via gcompat in the entrypoint, not here.
+  # Runs after the chown of /home/ubuntu below, which would otherwise reset the group.
+  roles_anywhere_key_runcmd = local.roles_anywhere_enabled && var.roles_anywhere_key_gid != null ? [
+    "chgrp ${var.roles_anywhere_key_gid} /home/ubuntu/aws-roles-anywhere/client-key.pem && chmod 0640 /home/ubuntu/aws-roles-anywhere/client-key.pem",
+  ] : []
+
   roles_anywhere_entrypoint = local.roles_anywhere_enabled ? [
     "sh", "-c", "apk add --no-cache gcompat >/dev/null && exec /entrypoint.sh \"$@\"", "--",
   ] : []
@@ -177,7 +182,7 @@ locals {
 }
 
 module "core" {
-  source = "git::https://github.com/miquido/terraform-docker-host.git?ref=v2.0.1"
+  source = "git::https://github.com/miquido/terraform-docker-host.git?ref=v2.1.0"
 
   hostname     = var.name
   vm_user      = "ubuntu"
@@ -225,6 +230,7 @@ module "core" {
     local.nas_runcmd,
     local.roles_anywhere_runcmd,
     ["chown -R ubuntu:ubuntu /mnt/data/certs /mnt/data/compose /mnt/data/static /home/ubuntu"],
+    local.roles_anywhere_key_runcmd,
   )
 }
 
@@ -233,7 +239,7 @@ resource "proxmox_download_file" "ubuntu_noble" {
   datastore_id = var.image_datastore
   node_name    = var.node_name
   url          = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
-  file_name    = "noble-server-cloudimg-amd64.img"
+  file_name    = var.image_file_name
 
   overwrite           = false
   overwrite_unmanaged = true

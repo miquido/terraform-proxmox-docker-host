@@ -1,0 +1,25 @@
+# Copy to variables.auto.tfvars (git-ignored) and fill in; terraform picks it up automatically.
+# The API token is a secret: export TF_VAR_proxmox_api_token instead of putting it here.
+proxmox_endpoint = "https://pve.example.com"
+# proxmox_node_address         = "10.0.0.5"        # when the endpoint is not the node itself
+# proxmox_ssh_private_key_path = "~/.ssh/id_ed25519" # default: the SSH agent
+
+node_name = "pve1"
+vm_id     = 150
+ip        = "10.0.0.200/24"
+gateway   = "10.0.0.1"
+
+aws_profile = "my-profile" # or remove to use the default credential chain
+aws_region  = "eu-west-1"
+
+domain     = "dmc.example.com"
+acme_email = "devops@example.com"
+
+allowed_cidr = "10.0.0.0/8"
+
+oidc_jwks_url      = "https://gitlab.example.com/oauth/discovery/keys"
+oidc_audience      = "https://gitlab.example.com"
+oidc_expected_subs = ["project_path:my-group/**"]
+
+# ssh_public_keys = ["ssh-ed25519 AAAA..."]
+# enable_registry = false

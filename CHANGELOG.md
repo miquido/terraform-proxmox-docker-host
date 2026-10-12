@@ -1,3 +1,10 @@
+# [1.1.0](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/compare/v1.0.1...v1.1.0) (2026-10-12)
+
+
+### Features
+
+* image_file_name and roles_anywhere_key_gid, a complete example, docker-host 2.1.0 ([80b185f](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/commit/80b185fdcd82a1f7212cf2fd454601038fc3cb12))
+
 ## [1.0.1](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/compare/v1.0.0...v1.0.1) (2026-10-08)
 
 

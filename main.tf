@@ -177,7 +177,7 @@ locals {
 }
 
 module "core" {
-  source = "git::https://github.com/miquido/terraform-docker-host.git?ref=v2.0.1"
+  source = "git::https://github.com/miquido/terraform-docker-host.git?ref=v2.1.0"
 
   hostname     = var.name
   vm_user      = "ubuntu"

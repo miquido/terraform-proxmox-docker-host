@@ -83,7 +83,7 @@ make lint   # lint terraform code
 
 | Name | Version |
 | ---- | ------- |
-| <a name="provider_proxmox"></a> [proxmox](#provider\_proxmox) | ~> 0.106.0 |
+| <a name="provider_proxmox"></a> [proxmox](#provider\_proxmox) | 0.106.0 |
 
 ## Modules
 

@@ -76,7 +76,7 @@ locals {
 
   cloudflared_service = <<-EOF
     cloudflared:
-      image: cloudflare/cloudflared:2026.9.3
+      image: cloudflare/cloudflared:2026.10.7
       command: tunnel run
       environment:
         TUNNEL_TOKEN: ${var.cloudflare_tunnel_token}

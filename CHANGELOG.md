@@ -1,3 +1,10 @@
+## [1.1.1](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/compare/v1.1.0...v1.1.1) (2026-11-02)
+
+
+### Bug Fixes
+
+* bump cloudflared to 2026.10.7 ([405002e](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/commit/405002e5682881b2d32ebbe36a0281b0a9a48ef0))
+
 # [1.1.0](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/compare/v1.0.1...v1.1.0) (2026-10-12)
 
 

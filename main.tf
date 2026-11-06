@@ -255,6 +255,12 @@ resource "proxmox_virtual_environment_file" "cloud_init" {
     file_name = "${var.name}-cloud-init.yaml"
     data      = module.core.cloud_init_config
   }
+
+  # Same reasoning as on the VM below: the snippet is consumed on first boot. To rebuild a host
+  # with the current cloud-init, replace both: -replace=...cloud_init -replace=...docker.
+  lifecycle {
+    ignore_changes = [source_raw[0].data]
+  }
 }
 
 resource "proxmox_virtual_environment_vm" "docker" {

@@ -203,6 +203,7 @@ module "core" {
   registry_username = var.registry_username
   registry_password = var.registry_password
   enable_registry   = var.enable_registry
+  enable_autoheal   = var.enable_autoheal
   registry_htpasswd = var.registry_htpasswd
 
   ssh_public_keys = var.ssh_public_keys
@@ -284,6 +285,13 @@ resource "proxmox_virtual_environment_vm" "docker" {
   }
 
   network_device { bridge = "vmbr0" }
+
+  # cloud-init runs once, on first boot. Changing the rendered config (a new core module version,
+  # a new compose service, ...) must not make Terraform destroy and recreate a running host: such
+  # changes reach only newly created VMs, an existing one is rebuilt deliberately (taint/replace).
+  lifecycle {
+    ignore_changes = [initialization[0].user_data_file_id]
+  }
 
   initialization {
     datastore_id      = var.image_datastore

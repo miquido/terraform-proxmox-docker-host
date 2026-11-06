@@ -214,6 +214,12 @@ variable "enable_registry" {
   default     = false
 }
 
+variable "enable_autoheal" {
+  type        = bool
+  description = "Run autoheal on the host: restarts containers labelled `autoheal=true` that Docker reports as unhealthy (the container needs a HEALTHCHECK)."
+  default     = false
+}
+
 variable "registry_htpasswd" {
   type        = string
   sensitive   = true

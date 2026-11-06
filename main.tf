@@ -182,7 +182,7 @@ locals {
 }
 
 module "core" {
-  source = "git::https://github.com/miquido/terraform-docker-host.git?ref=v2.1.0"
+  source = "git::https://github.com/miquido/terraform-docker-host.git?ref=v2.2.0"
 
   hostname     = var.name
   vm_user      = "ubuntu"
@@ -203,6 +203,7 @@ module "core" {
   registry_username = var.registry_username
   registry_password = var.registry_password
   enable_registry   = var.enable_registry
+  enable_autoheal   = var.enable_autoheal
   registry_htpasswd = var.registry_htpasswd
 
   ssh_public_keys = var.ssh_public_keys
@@ -254,6 +255,12 @@ resource "proxmox_virtual_environment_file" "cloud_init" {
     file_name = "${var.name}-cloud-init.yaml"
     data      = module.core.cloud_init_config
   }
+
+  # Same reasoning as on the VM below: the snippet is consumed on first boot. To rebuild a host
+  # with the current cloud-init, replace both: -replace=...cloud_init -replace=...docker.
+  lifecycle {
+    ignore_changes = [source_raw[0].data]
+  }
 }
 
 resource "proxmox_virtual_environment_vm" "docker" {
@@ -284,6 +291,13 @@ resource "proxmox_virtual_environment_vm" "docker" {
   }
 
   network_device { bridge = "vmbr0" }
+
+  # cloud-init runs once, on first boot. Changing the rendered config (a new core module version,
+  # a new compose service, ...) must not make Terraform destroy and recreate a running host: such
+  # changes reach only newly created VMs, an existing one is rebuilt deliberately (taint/replace).
+  lifecycle {
+    ignore_changes = [initialization[0].user_data_file_id]
+  }
 
   initialization {
     datastore_id      = var.image_datastore

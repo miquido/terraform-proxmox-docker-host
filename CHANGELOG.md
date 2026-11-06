@@ -1,3 +1,15 @@
+# [1.2.0](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/compare/v1.1.1...v1.2.0) (2026-11-06)
+
+
+### Bug Fixes
+
+* also ignore cloud-init snippet content changes on existing hosts ([9faedf7](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/commit/9faedf73294bf14b31d74dbb965c2c31af136e93))
+
+
+### Features
+
+* enable_autoheal, and stop cloud-init changes from replacing a running VM ([df881eb](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/commit/df881eba9cf31f3034d724f8c0608fabc5ef6240))
+
 ## [1.1.1](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/compare/v1.1.0...v1.1.1) (2026-11-02)
 
 

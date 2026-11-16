@@ -1,3 +1,10 @@
+## [1.2.1](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/compare/v1.2.0...v1.2.1) (2026-11-16)
+
+
+### Bug Fixes
+
+* bump terraform-docker-host to v2.2.2 ([4f28ddd](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/commit/4f28ddd38cfd30b480be439203347295a206319f))
+
 # [1.2.0](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/compare/v1.1.1...v1.2.0) (2026-11-06)
 
 

@@ -1,3 +1,10 @@
+# [1.3.0](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/compare/v1.2.2...v1.3.0) (2026-11-26)
+
+
+### Features
+
+* autoheal service on by default (still opt-in per container) ([cad2b44](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/commit/cad2b44d27ca9b78426e3c28dafbbf74e22fb60d))
+
 ## [1.2.2](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/compare/v1.2.1...v1.2.2) (2026-11-26)
 
 

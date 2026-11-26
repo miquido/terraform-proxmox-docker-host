@@ -1,3 +1,10 @@
+## [1.2.2](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/compare/v1.2.1...v1.2.2) (2026-11-26)
+
+
+### Bug Fixes
+
+* docker-compose-runner v1.5.0 by default (rolls a failed deploy back to the last good one) ([88ffccc](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/commit/88ffccc00b6a0c365c397b0b38ba8c10fb69ed61))
+
 ## [1.2.1](https://gitlab.miquido.com/miquido/terraform/proxmox-docker-host/compare/v1.2.0...v1.2.1) (2026-11-16)
 
 
